@@ -1,22 +1,49 @@
-import './Calendar.css'
+import { useState } from 'react';
+import dayjs from 'dayjs';
+import { useCalendar } from './useCalendar';
+import './Calendar.css';
+
 
 export const Calendar = () => {
-    const array:number[]= [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]
-    return (
-        <div className='calendar'>
-           <section className='calendar__inf'>
-             <h1>Julio</h1>
-           </section>
-           <section className='calendar__prompts'> <h1>Lunes</h1> <h1>Martes</h1> <h1>Miercoles</h1> <h1>Jueves</h1> <h1>Viernes</h1> <h1>Sabado</h1> <h1>Domingo</h1></section>
-           <section className='calendar__days'>
-            {array.map((day) => {
-                return (<div key={day}>
-                    <h1>{day}</h1>
-                </div>)
-            })}
-           </section>
-           
-            
-        </div>
-    )
-}
+  const dayPrompts = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+  const [currentDate, setCurrentDate] = useState(dayjs());
+  const days = useCalendar(currentDate);
+
+  const goToPreviousMonth = () => setCurrentDate(currentDate.subtract(1, 'month'));
+  const goToNextMonth = () => setCurrentDate(currentDate.add(1, 'month'));
+ 
+
+  return (
+    <div className='calendar'>
+      <section className='calendar__inf'>
+        <h1>
+          {currentDate.format('MMMM YYYY')}
+        </h1>
+        <section className="calendar__inf--buttons">
+            <button onClick={goToPreviousMonth}><img src="/back.png" alt="" /></button>
+            <button onClick={goToNextMonth}><img src="/forward.png" alt="" /></button>
+        </section>
+      </section>
+
+      <section className='calendar__prompts'>
+        {dayPrompts.map((d) => (
+          <h1 key={d}>{d}</h1>
+        ))}
+      </section>
+
+      <section className='calendar__days'>
+        {days.map((day) => {
+          const isCurrentMonth = day.month() === currentDate.month();
+          return (
+            <div
+              key={day.toString()}
+              className={isCurrentMonth ? 'current-month' : 'other-month'}
+            >
+              {day.format('DD')}
+            </div>
+          );
+        })}
+      </section>
+    </div>
+  );
+};
