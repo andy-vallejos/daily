@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import dayjs from 'dayjs';
-import { useCalendar } from './useCalendar';
+import { useCalendar } from './hooks/useCalendar';
 import './Calendar.css';
 
 
@@ -34,10 +34,12 @@ export const Calendar = () => {
       <section className='calendar__days'>
         {days.map((day) => {
           const isCurrentMonth = day.month() === currentDate.month();
+          const isToday = day.isSame(dayjs(), 'day');
           return (
             <div
               key={day.toString()}
-              className={isCurrentMonth ? 'current-month' : 'other-month'}
+              className={isCurrentMonth ? 'current-month' : 'other-month' }
+              id={isToday ? "current-day" : ""}
             >
               {day.format('DD')}
             </div>
